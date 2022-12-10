@@ -83,6 +83,9 @@ plt.savefig(os.path.join(sharpness_dir, 'sharpness.jpg'))
 
 plt.figure()
 sharpness = np.argmax(lapla_var_stack, axis=0)
+# save sharpness for GUI
+with open(os.path.join(sharpness_dir, 'sharpness.npy'), 'wb') as f:
+    np.save(f, sharpness)
 plt.imshow(sharpness)
 plt.colorbar(shrink=0.5)
 plt.savefig(os.path.join(sharpness_dir, 'sharpness_var.jpg'))
