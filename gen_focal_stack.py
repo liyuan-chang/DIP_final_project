@@ -7,6 +7,7 @@ from focal_stack import FocalStack
 
 
 # simulate motion of focusing
+# ratio = [1.0, 1.0, 1.0, 1.0]
 ratio = [1.06, 1.04, 1.02, 1.0]
 
 dataset = {
