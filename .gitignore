@@ -1,2 +1,11 @@
 venv/
 __pycache__/
+
+data/light_field/
+
+data/focal_stack_gen/
+
+ffmpeg/
+*.zip
+
+test.mp4
