@@ -41,10 +41,19 @@ def gen_refocus_video(sequence, n_frame, focal_stack_dir, refocus_video_dir):
     #           resolution=(436, 1024),
     #           frame_format=os.path.join('./data/light_field/bamboo_2/02_02/%03d.png'),
     #           video_fname='./orginal.mp4')
-    rgb2video(framerate=10,
-              resolution=(436, 1024),
-              frame_format=os.path.join(refocus_video_dir, '%03d.png'),
-              video_fname='./data/refocus.mp4')
+    # rgb2video(framerate=10,
+    #           resolution=(436, 1024),
+    #           frame_format=os.path.join(refocus_video_dir, '%03d.png'),
+    #           video_fname='./data/refocus.mp4')
+    
+    fps = 10
+    # frame dimension: (width, height)
+    frameSize = (1024, 436)
+    out = cv2.VideoWriter('./data/refocus.mp4', cv2.VideoWriter_fourcc(*'mp4v'), fps, frameSize)
+    for filename in sorted(os.listdir(refocus_video_dir)):
+        img = cv2.imread(os.path.join(refocus_video_dir, filename)).astype(np.uint8)
+        out.write(img)
+    out.release()
     
 
 if __name__ == '__main__':

@@ -5,6 +5,7 @@ data/light_field/
 data/focal_stack_gen/
 data/align_stack_gen/
 data/refocus_video/
+data/refocus.mp4
 
 ffmpeg/
 *.zip
