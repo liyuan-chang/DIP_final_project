@@ -6,9 +6,8 @@ import matplotlib.pyplot as plt
 from scipy import ndimage
 
 focal_stack_dir = './data/focal_stack_gen/bamboo_2/'
-# lapla_stack_dir = './data/laplacian_video/'
 sharpness_dir = './data/sharpness_video/'
-# align_dir = './data/aligh_video'
+align_stack_dir = './data/align_stack_gen/'
 
 # only calculate sharpness of some images
 frame_step = 10
@@ -36,34 +35,38 @@ focal_stack = np.transpose(focal_stack, (1, 0, 2, 3, 4))
 
 num_frames, N, H, W, C = focal_stack.shape
 
-
+#%% alignment
 # naive optimization
-# max_scale = 1.2
-# steps = 50
-# scale = np.arange(start=1, stop=max_scale, step=(max_scale-1)/steps)
+max_scale = 1.1
+steps = 20
+scale = np.arange(start=1, stop=max_scale, step=(max_scale-1)/steps)
 
-# for i, img in enumerate(focal_stack):
-#     # NOTE: 0.jpg is the image that focus on the nearest object
-#     if i == 0:
-#         cv2.imwrite(os.path.join(align_dir, f'0.jpg'), focal_stack[0])
-#         continue
-#     # use template matching to find the scaling ratio and offset parameters
-#     found = None
-#     for s in tqdm(scale):
-#         resized = cv2.resize(focal_stack[i], (int(W * s), int(H * s)))
-#         result = cv2.matchTemplate(resized, focal_stack[0], cv2.TM_CCOEFF)
-#         (_, correlation, _, location) = cv2.minMaxLoc(result)
+for frame_id in range(num_frames):
+    for i, img in enumerate(focal_stack[frame_id]):
+        folder_name = os.path.join(align_stack_dir, str(i))
+        if not os.path.exists(folder_name):
+            os.makedirs(folder_name)
+        # NOTE: 0.jpg is the image that focus on the nearest object
+        if i == 0:
+            cv2.imwrite(os.path.join(folder_name, f'{frame_id:03d}.png'), focal_stack[frame_id][0])
+            continue
+        # use template matching to find the scaling ratio and offset parameters
+        found = None
+        for s in tqdm(scale):
+            resized = cv2.resize(focal_stack[frame_id][i], (int(W * s), int(H * s)))
+            result = cv2.matchTemplate(resized, focal_stack[frame_id][0], cv2.TM_CCOEFF)
+            (_, correlation, _, location) = cv2.minMaxLoc(result)
+    
+            if found is None or correlation > found[0]:
+                found = (correlation, location, s)
+    
+        _, (x, y), s = found
+        print(f'focal stack [{frame_id}][{i}] is matched using (s, x, y) = ({s:.2f}, {x}, {y})')
+        aligned = cv2.resize(focal_stack[frame_id][i], (int(W * s), int(H * s)))
+        aligned = aligned[y:y+H, x:x+W]
+        cv2.imwrite(os.path.join(folder_name, f'{frame_id:03d}.png'), aligned)
 
-#         if found is None or correlation > found[0]:
-#             found = (correlation, location, s)
-
-#     _, (x, y), s = found
-#     print(f'focal stack [{i}] is matched using (s, x, y) = ({s}, {x}, {y})')
-#     aligned = cv2.resize(focal_stack[i], (int(W * s), int(H * s)))
-#     aligned = aligned[y:y+H, x:x+W]
-#     cv2.imwrite(os.path.join(align_dir, f'{i}.jpg'), aligned)
-
-
+#%% sharpness
 # calculate sharpness
 frame_index = np.arange(0, num_frames, frame_step)
 lapla_stack = np.zeros((len(frame_index), N, H, W))

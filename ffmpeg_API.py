@@ -42,4 +42,7 @@ if __name__ == '__main__':
     # yuv2rgb()
     # rgb2yuv()
     # yuv2video()
-    rgb2video()
+    rgb2video(framerate=10,
+              resolution=(436, 1024),
+              frame_format=os.path.join('./data/refocus_video/bamboo_2', '%03d.png'),
+              video_fname='./data/refocus.mp4')

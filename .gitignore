@@ -3,6 +3,7 @@ __pycache__/
 
 data/light_field/
 data/focal_stack_gen/
+data/align_stack_gen/
 data/refocus_video/
 
 ffmpeg/

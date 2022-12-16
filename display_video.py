@@ -3,12 +3,13 @@ import os
 import numpy as np
 from tkinter import *
 from PIL import ImageTk, Image
-import glob
+from gen_refocus_video import gen_refocus_video
 
 
 original_dir = './data/focal_stack_gen/bamboo_2/'
-align_dir = './data/focal_stack_gen/bamboo_2/'
+align_dir = './data/align_stack_gen/'
 sharpness_dir = './data/sharpness_video/'
+refocus_video_dir = './data/refocus_video/bamboo_2'
 sharpness_fnames = []
 for fname in sorted(os.listdir('./data/sharpness_video/')):
     if fname.split('.')[-1] == 'npy':
@@ -71,11 +72,13 @@ class App():
         aligned_btn = Button(self.root, text='Aligned', command=self.set_aligned)
         prev_btn = Button(self.root, text='Previous', command=self.set_prev)
         next_btn = Button(self.root, text='Next', command=self.set_next)
+        export_btn = Button(self.root, text='Export', command=self.set_export)
         # NOTE: not sure if this affects the window size
         original_btn.pack(side=BOTTOM)
         aligned_btn.pack(side=BOTTOM)
         prev_btn.pack(side=BOTTOM)
         next_btn.pack(side=BOTTOM)
+        export_btn.pack(side=BOTTOM)
         
         # display the first image
         self.curr_frame = 0
@@ -178,7 +181,21 @@ class App():
     def set_outside(self, event):
         """Mouse is outside the image"""
         self.inside = False
-        
+    
+    def set_export(self):
+        """Export video"""
+        if self.flag_original:
+            gen_refocus_video(sequence=list(self.video_sequence.items()),
+                              n_frame=self.num_frames,
+                              focal_stack_dir=self.original_dir,
+                              refocus_video_dir=refocus_video_dir)
+        else:
+            gen_refocus_video(sequence=list(self.video_sequence.items()),
+                              n_frame=self.num_frames,
+                              focal_stack_dir=self.align_dir,
+                              refocus_video_dir=refocus_video_dir)
+        print('Finished exporting video.')
+
 if __name__ == "__main__":
     root = Tk()
     app = App(root)
@@ -186,3 +203,4 @@ if __name__ == "__main__":
     print('------ Video sequence ------')
     print(list(app.video_sequence.items()))
     print('----------------------------')
+    
