@@ -1,7 +1,6 @@
 import os 
 import cv2
 import numpy as np
-from ffmpeg_API import rgb2video
 
 
 def interp_sequence(sequence, n_frame):
@@ -36,15 +35,7 @@ def gen_refocus_video(sequence, n_frame, focal_stack_dir, refocus_video_dir):
         frame = cv2.imread(os.path.join(*tmp))
         tmp = [refocus_video_dir, frame_fname]
         cv2.imwrite(os.path.join(*tmp), frame)
-        
-    # rgb2video(framerate=10,
-    #           resolution=(436, 1024),
-    #           frame_format=os.path.join('./data/light_field/bamboo_2/02_02/%03d.png'),
-    #           video_fname='./orginal.mp4')
-    # rgb2video(framerate=10,
-    #           resolution=(436, 1024),
-    #           frame_format=os.path.join(refocus_video_dir, '%03d.png'),
-    #           video_fname='./data/refocus.mp4')
+
     
     fps = 10
     # frame dimension: (width, height)

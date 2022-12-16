@@ -11,9 +11,11 @@ align_dir = './data/align_stack_gen/'
 sharpness_dir = './data/sharpness_video/'
 refocus_video_dir = './data/refocus_video/bamboo_2'
 sharpness_fnames = []
-for fname in sorted(os.listdir('./data/sharpness_video/')):
+for fname in sorted(os.listdir(sharpness_dir)):
     if fname.split('.')[-1] == 'npy':
         sharpness_fnames.append(os.path.join(sharpness_dir, fname))
+# output directory
+os.makedirs(refocus_video_dir, exist_ok=True)
 
 def resize(img, window_w, window_h):
     w, h = img.size
@@ -98,6 +100,8 @@ class App():
         # record sequence to generate video
         # format: [(frame, depth), ...]
         self.video_sequence = {}
+        for frame_id in self.frame_index:
+            self.video_sequence[frame_id] = 0
 
     
     def read_data(self):
@@ -158,7 +162,7 @@ class App():
     
     def set_prev(self):
         """Set displaying previous image"""
-        if self.curr_frame > self.frame_step:
+        if self.curr_frame >= self.frame_step:
             self.curr_frame = self.curr_frame - self.frame_step
         if self.flag_original:
             self.display_image(self.focal_stack[self.curr_frame][self.curr_idx])

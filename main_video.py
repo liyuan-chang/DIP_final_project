@@ -8,6 +8,9 @@ from scipy import ndimage
 focal_stack_dir = './data/focal_stack_gen/bamboo_2/'
 sharpness_dir = './data/sharpness_video/'
 align_stack_dir = './data/align_stack_gen/'
+# output directory
+os.makedirs(sharpness_dir, exist_ok=True)
+os.makedirs(align_stack_dir, exist_ok=True)
 
 # only calculate sharpness of some images
 frame_step = 10

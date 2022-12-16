@@ -31,18 +31,32 @@ data/
 
 ## Execute
 The output images are located in `data/`.
+
+### Image Refocusing
+
+Align focal stack and calculate sharpness.
 ```bash
 python main.py
 ```
+
 Launch the display app by executing the following command.
 ```bash
 python display.py
 ```
+
+### Video Refocusing
+
 Generate focal stacks from light field videos.
 ```bash
 python gen_focal_stack.py
 ```
-Convert all frames in a folder into a video.
+
+Align focal stacks and calculate sharpness.
 ```bash
-python ffmpeg_API.py
+python main_video.py
+```
+
+Launch the display app and choose the focal point of the selected frame. Press `Export` button to generate refocused video.
+```bash
+python display_video.py
 ```

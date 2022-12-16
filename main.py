@@ -9,7 +9,10 @@ focal_stack_dir = './data/raw/'
 lapla_stack_dir = './data/laplacian/'
 sharpness_dir = './data/sharpness/'
 align_dir = './data/align/'
-edge_dir = './data/edge/'
+# output directory
+os.makedirs(lapla_stack_dir, exist_ok=True)
+os.makedirs(sharpness_dir, exist_ok=True)
+os.makedirs(align_dir, exist_ok=True)
 
 # calculate sharpness by local variance of Laplacian
 def local_variance(lapla, win_rows, win_cols):
@@ -31,7 +34,7 @@ focal_stack = np.array(focal_stack)
 
 N, H, W, C = focal_stack.shape
 
-
+#%% alignment
 # naive optimization
 max_scale = 1.2
 steps = 50
@@ -58,7 +61,7 @@ for i, img in enumerate(focal_stack):
     aligned = aligned[y:y+H, x:x+W]
     cv2.imwrite(os.path.join(align_dir, f'{i}.jpg'), aligned)
 
-
+#%% sharpness
 # calculate sharpness
 lapla_stack = np.zeros((N, H, W))
 lapla_var_stack = np.zeros((N, H, W))
