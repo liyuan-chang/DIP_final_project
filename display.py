@@ -7,6 +7,7 @@ from PIL import ImageTk, Image
 
 original_dir = './data/raw/'
 align_dir = './data/align/'
+bokeh_dir = './data/bokeh/'
 sharpness_fname = './data/sharpness/sharpness.npy'
 
 
@@ -32,11 +33,12 @@ def resize(img, window_w, window_h):
 
 
 class App():
-    def __init__(self, root, original_dir=original_dir, align_dir=align_dir, sharpness_fname=sharpness_fname) -> None:
+    def __init__(self, root, original_dir=original_dir, align_dir=align_dir, bokeh_dir=bokeh_dir, sharpness_fname=sharpness_fname) -> None:
         # initialize parameters
         self.root = root
         self.original_dir = original_dir
         self.align_dir = align_dir
+        self.bokeh_dir = bokeh_dir
         self.sharpness_fname = sharpness_fname
         
         # set window size
@@ -48,6 +50,7 @@ class App():
         # read all images 
         self.focal_stack = []
         self.align_stack = []
+        self.bokeh_stack = []
         self.sharpness = None
         self.read_data()
         
@@ -58,11 +61,14 @@ class App():
         # buttons
         self.flag_original = True
         self.flag_aligned = False
+        self.flag_bokeh = False
         original_btn = Button(self.root, text='Original', command=self.set_original)
         aligned_btn = Button(self.root, text='Aligned', command=self.set_aligned)
+        bokeh_btn = Button(self.root, text = 'Bokeh', command = self.set_bokeh)
         # NOTE: not sure if this affects the window size
         original_btn.pack(side=BOTTOM)
         aligned_btn.pack(side=BOTTOM)
+        bokeh_btn.pack(side = BOTTOM)
         
         # display the first image
         self.curr_idx = 0
@@ -76,7 +82,7 @@ class App():
     
     def read_data(self):
         """Read the original FS, aligned FS and the sharpness image"""
-        for original, align in zip(sorted(os.listdir(self.original_dir)), sorted(os.listdir(self.align_dir))):
+        for original, align, bokeh in zip(sorted(os.listdir(self.original_dir)), sorted(os.listdir(self.align_dir)), sorted(os.listdir(self.bokeh_dir))):
             img = Image.open(os.path.join(self.original_dir, original))
             if img is None:
                 print (f'Error opening image {original}')
@@ -87,6 +93,12 @@ class App():
                 print (f'Error opening image {align}')
                 exit(-1)
             self.align_stack.append(ImageTk.PhotoImage(resize(img, window_w=self.window_w, window_h=self.window_h)))
+            img = Image.open(os.path.join(self.bokeh_dir, bokeh))
+            if img is None:
+                print (f'Error opening image {bokeh}')
+                exit(-1)
+            self.bokeh_stack.append(ImageTk.PhotoImage(resize(img, window_w=self.window_w, window_h=self.window_h)))
+
         self.sharpness = np.load(self.sharpness_fname)
         
     
@@ -106,21 +118,27 @@ class App():
         print(f'Sharpness at ({sharpness_x}, {sharpness_y}) index = {self.curr_idx}')
         if self.flag_original:
             self.display_image(self.focal_stack[self.curr_idx])
-        else:
+        elif self.flag_aligned:
             self.display_image(self.align_stack[self.curr_idx])
+        else:
+            self.display_image(self.bokeh_stack[self.curr_idx])
         
         
     def set_original(self):
         """Set displaying original FS"""
-        self.flag_original, self.flag_aligned = True, False
+        self.flag_original, self.flag_aligned, self.flag_bokeh = True, False, False
         self.display_image(self.focal_stack[self.curr_idx])
         
         
     def set_aligned(self):
         """Set displaying aligned FS"""
-        self.flag_original, self.flag_aligned = False, True
+        self.flag_original, self.flag_aligned, self.flag_bokeh = False, True, False
         self.display_image(self.align_stack[self.curr_idx])
         
+    def set_bokeh(self):
+        """Set displaying aligned FS"""
+        self.flag_original, self.flag_aligned, self.flag_bokeh = False, False, True
+        self.display_image(self.bokeh_stack[self.curr_idx])        
         
 if __name__ == "__main__":
     root = Tk()
