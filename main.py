@@ -91,4 +91,5 @@ with open(os.path.join(sharpness_dir, 'sharpness.npy'), 'wb') as f:
     np.save(f, sharpness)
 plt.imshow(sharpness)
 plt.colorbar(shrink=0.5)
+cv2.imwrite(os.path.join(sharpness_dir, 'sharpness_var.png'), sharpness)
 plt.savefig(os.path.join(sharpness_dir, 'sharpness_var.jpg'))
