@@ -5,3 +5,7 @@ tqdm
 scipy
 pillow
 pyyaml
+torch
+torchvision
+cupy
+cupy_cuda90
