@@ -34,29 +34,36 @@ The output images are located in `data/`.
 
 ### Image Refocusing
 
-Align focal stack and calculate sharpness.
+Run the following command to align focal stack and calculate sharpness. The aligned focal stack will be in `data/align`. The results of Laplacian will be in `data/laplacian`. The sharpness will be in `data/sharpness`.
 ```bash
 python main.py
 ```
 
-Launch the display app by executing the following command.
+Run the following command to launch the display app by executing the following command.
 ```bash
 python display.py
 ```
 
+### Bokeh Effect
+
+Run the following command to generate focal stack with magnified bokeh effect. The focal stack will be in `data/bokeh`.
+```bash
+python bokeh.py
+```
+
 ### Video Refocusing
 
-Generate focal stacks from light field videos.
+Run the following command to generate focal stacks from light field videos. The focal stacks will be in `data/focal_stack_gen`.
 ```bash
 python gen_focal_stack.py
 ```
 
-Align focal stacks and calculate sharpness.
+Run the following command to align focal stacks and calculate sharpness. The aligned focal stacks will be in `data/align_stack_gen`. The sharpness will be in `data/sharpness_video`.
 ```bash
 python main_video.py
 ```
 
-Launch the display app and choose the focal point of the selected frame. Press `Export` button to generate refocused video.
+Run the following command to launch the display app and choose the focal point of the selected frame. Press `Export` button to generate the refocused video. The refocused video will be in `data/refocus.mp4`.
 ```bash
 python display_video.py
 ```
